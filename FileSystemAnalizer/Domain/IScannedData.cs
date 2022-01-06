@@ -7,20 +7,13 @@ using System.Threading.Tasks;
 
 namespace FileSystemAnalizer.Domain
 {
-    public interface IScannedData
+    public interface IScanData
     {
-        [DisplayedName("Путь")]
         string Path { get; }
-        [DisplayedName("Название")]
         string Name { get; }
-        [DisplayedName("Размер")]
-        long Weight { get; }
-        [DisplayedName("Созданно")]
+        SizeData Size { get; }
         DateTime CreationTime { get; }
-        [DisplayedName("Последнее открытие")]
         DateTime LastAccessTime { get; }
-        [DisplayedName("Изменено")]
         DateTime LastWriteTime { get; }
-        //bool IsDirectory { get; }
     }
 }

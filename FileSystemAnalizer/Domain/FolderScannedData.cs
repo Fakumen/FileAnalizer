@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileSystemAnalizer.Infrastructure;
 
 namespace FileSystemAnalizer.Domain
 {
-    public sealed class FolderScannedData : IScannedData
+    public sealed class FolderScannedData : IScanData, ITree<FolderScannedData, FileScannedData>
     {
-        public readonly long TotalFilesCount;
-        public readonly long TotalFoldersCount;
-        public long Weight => weight;
+        public long TotalFilesCount => totalFilesCount.Value;
+        public long TotalFoldersCount => totalFoldersCount.Value;
+        public SizeData Size => size.Value;//Размер (не "На диске")
         public string Path => directoryInfo.FullName;
         public string Name => directoryInfo.Name;
         public DateTime CreationTime => directoryInfo.CreationTime;
@@ -20,53 +21,57 @@ namespace FileSystemAnalizer.Domain
         public long FoldersCount => folders.Count();
         public long FilesCount => files.Count();
         public long TotalElementsCount => TotalFilesCount + TotalFoldersCount;
-        public IEnumerable<FolderScannedData> Folders => folders.Select(f => f);//Нельзя сделать даункаст к листу и изменить
-        public IEnumerable<FileScannedData> Files => files.Select(f => f);
+        public IEnumerable<FolderScannedData> Folders => folders;//.Select(f => f) Нельзя сделать даункаст к листу и изменить
+        public IEnumerable<FileScannedData> Files => files;
+        public IEnumerable<FolderScannedData> Trees => Folders;
+        public IEnumerable<FileScannedData> Leaves => Files;
 
-        private readonly long weight;//Размер (не "На диске")
+        private readonly Lazy<long> totalFilesCount;
+        private readonly Lazy<long> totalFoldersCount;
+        private readonly Lazy<SizeData> size;
         private readonly List<FolderScannedData> folders = new List<FolderScannedData>();
         private readonly List<FileScannedData> files = new List<FileScannedData>();
         private readonly DirectoryInfo directoryInfo;
+        private bool isInspected;
 
-        private FolderScannedData(
-            DirectoryInfo directoryInfo,
-            Func<DirectoryInfo, bool> directorySelector,
-            Func<FileInfo, bool> fileSelector)
+        public FolderScannedData(DirectoryInfo directoryInfo)
         {
             this.directoryInfo = directoryInfo;
-            //directoryInfo.EnumerateDirectories().AsParallel().ForAll(d => folders.Add(new FolderScannedData(d)));
-            foreach (var directory in directoryInfo
-                .EnumerateDirectories()
-                .Where(directorySelector)
-                .AsParallel()
-                .AsSequential())
+            //Все объекты внутри проинициализированны
+            SizeData sizeFactory() => new SizeData(
+                Folders.Sum(f => f.Size.SizeInBytes)
+                + Files.Sum(f => f.Size.SizeInBytes));
+            size = new Lazy<SizeData>(sizeFactory);
+            long totalFoldersCountFactory() => folders.Sum(f => f.TotalFoldersCount) + FoldersCount;
+            long totalFilesCountFactory() => folders.Sum(f => f.TotalFilesCount) + FilesCount;
+            totalFoldersCount = new Lazy<long>(totalFoldersCountFactory);
+            totalFilesCount = new Lazy<long>(totalFilesCountFactory);
+        }
+
+        public FolderScannedData(string directoryPath) : this(new DirectoryInfo(directoryPath)) { }
+
+        public void Inspect()
+        {
+            if (isInspected)
+                return;
+            foreach (var directory in directoryInfo.EnumerateDirectories().Filter(!UserAccess.IsCurrentUserAdmin))
             {
-                folders.Add(new FolderScannedData(directory, directorySelector, fileSelector));
+                folders.Add(new FolderScannedData(directory));
             }
-            //foreach (var directory in directoryInfo.EnumerateDirectories())
-            //{
-            //    folders.Add(new FolderScannedData(directory));
-            //}
-            foreach (var file in directoryInfo.EnumerateFiles().Where(fileSelector))
+            foreach (var file in directoryInfo.EnumerateFiles().Filter(!UserAccess.IsCurrentUserAdmin))
             {
                 files.Add(new FileScannedData(file));
             }
-            //Все объекты внутри проинициализированны
-            weight = folders.Sum(f => f.Weight) + files.Sum(f => f.Weight);
-            TotalFoldersCount = folders.Sum(f => f.TotalFoldersCount) + FoldersCount;
-            TotalFilesCount = folders.Sum(f => f.TotalFilesCount) + FilesCount;
+            //directoryInfo.EnumerateDirectories().AsParallel().AsQueryable().ForAll(d => folders.Add(new FolderScannedData(d)));
+            //directoryInfo.EnumerateFiles().AsParallel().AsQueryable().ForAll(f => files.Add(new FileScannedData(f)));
+            isInspected = true;
         }
 
-        public static FolderScannedData ScanFolder(
-            string path,
-            Func<DirectoryInfo, bool> directorySelector = null,
-            Func<FileInfo, bool> fileSelector = null)
+        public void InspectAll()
         {
-            if (directorySelector == null)
-                directorySelector = directory => true;
-            if (fileSelector == null)
-                fileSelector = file => true;
-            return new FolderScannedData(new DirectoryInfo(path), directorySelector, fileSelector);
+            Inspect();
+            foreach (var f in Folders)
+                f.InspectAll();
         }
 
         public IEnumerable<FolderScannedData> EnumerateAllFolders()

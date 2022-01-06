@@ -1,4 +1,5 @@
-﻿using FileSystemAnalizer.Domain;
+﻿using FileSystemAnalizer.App;
+using FileSystemAnalizer.Domain;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,16 +10,17 @@ using System.Windows.Forms;
 
 namespace FileSystemAnalizer.UI
 {
-    public class ScannedDataTreeNode<TData> : TreeNode
-        where TData : IScannedData
+    public class ScannedDataTreeNode<TScanData> : TreeNode, IScanDataTreeNode<TScanData>, IScanDataTree<ScannedDataTreeNode<TScanData>>
+        where TScanData : IScanData
     {
         private readonly bool isDirectory;
-        private readonly TData scannedData;
+        public TScanData ScanData { get; }
 
-        public ScannedDataTreeNode(TData scannedData) : base()
+        public ScannedDataTreeNode(TScanData scannedData) : base()
         {
-            this.scannedData = scannedData;
-            Text = scannedData.Name;
+            this.ScanData = scannedData;
+            var sizeUnits = scannedData.Size.BestFittingUnits;
+            Text = $"{scannedData.Name} [{scannedData.Size.GetInUnits(sizeUnits):f1} {sizeUnits.ToString()}]";
             if (scannedData is FolderScannedData)
             {
                 var folderData = scannedData as FolderScannedData;
@@ -35,21 +37,22 @@ namespace FileSystemAnalizer.UI
             else if (scannedData is FileScannedData)
             {
                 var fileData = scannedData as FileScannedData;
-                var iconKey = fileData.Extension;
-                if (!IconPool.Contains(iconKey))
-                {
-                    using (var icon = Icon.ExtractAssociatedIcon(scannedData.Path))
-                        IconPool.Add(iconKey, icon);
-                }
-                SelectedImageKey = ImageKey = iconKey;
+                SelectedImageKey = ImageKey = IconPool.FileIconKey;
             }
         }
+
+        public void AddNode(ScannedDataTreeNode<TScanData> node) => Nodes.Add(new ScannedDataTreeNode<TScanData>(node))
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear() => Nodes.Clear();
     }
 
     public static class ScannedDataTreeNode
     {
         public static ScannedDataTreeNode<TData> Create<TData>(TData data)
-            where TData : IScannedData
+            where TData : IScanData
             => new ScannedDataTreeNode<TData>(data);
     }
 }

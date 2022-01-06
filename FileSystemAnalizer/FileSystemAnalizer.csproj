@@ -46,14 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Old\Classes.cs" />
+    <Compile Include="App\FolderScanner.cs" />
+    <Compile Include="App\IScanDataTree.cs" />
+    <Compile Include="App\IScanDataTreeNode.cs" />
+    <Compile Include="App\Scanner.cs" />
+    <Compile Include="App\UIElement.cs" />
+    <Compile Include="Infrastructure\IEnumerableExtensions.cs" />
+    <Compile Include="Infrastructure\ITree.cs" />
     <Compile Include="Domain\FileScannedData.cs" />
     <Compile Include="Domain\FolderScannedData.cs" />
     <Compile Include="Domain\IScannedData.cs" />
-    <Compile Include="Domain\WeightData.cs" />
-    <Compile Include="Infrastructure\DisplayedNameAttribute.cs" />
+    <Compile Include="Domain\SizeData.cs" />
     <Compile Include="Infrastructure\UserAccess.cs" />
-    <Compile Include="Old\ToRemove.cs" />
+    <Compile Include="UI\FileSystemScanDataTree.cs" />
     <Compile Include="UI\IconPool.cs" />
     <Compile Include="UI\ScannedDataTreeNode.cs" />
     <Compile Include="UI\Form1.cs">
@@ -88,6 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\file.png" />
+    <Content Include="Resources\folder.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using FileSystemAnalizer.App;
 
 namespace FileSystemAnalizer.UI
 {
@@ -30,19 +31,28 @@ namespace FileSystemAnalizer.UI
             using(var dialog = new FolderBrowserDialog())
             {
                 var result = dialog.ShowDialog();
-                if (result == DialogResult.OK && Directory.Exists(dialog.SelectedPath))
+                if (result == DialogResult.OK)
                 {
-                    var folderData = FolderScannedData.ScanFolder(dialog.SelectedPath);
+                    var scanner = new FolderScanner() as Scanner<string, FolderScannedData>;
                     FileHierarchyTree.Nodes.Clear();
                     FileHierarchyTree.ImageList = IconPool.GetImageList();
-                    FileHierarchyTree.Nodes.Add(ScannedDataTreeNode.Create(folderData));
+                    FileHierarchyTree.Nodes.Add(ScannedDataTreeNode.Create(scanner.TryScan(dialog.SelectedPath)));
                 }
             }
         }
 
         private void FileHierarchyTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (e.Node is ScannedDataTreeNode<FolderScannedData>)
+            {
+                var node = e.Node as ScannedDataTreeNode<FolderScannedData>;
 
+            }
+            if (e.Node is ScannedDataTreeNode<FileScannedData>)
+            {
+                var node = e.Node as ScannedDataTreeNode<FileScannedData>;
+
+            }
         }
     }
 }

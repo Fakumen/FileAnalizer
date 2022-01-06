@@ -11,32 +11,18 @@ namespace FileSystemAnalizer.UI
 {
     public static class IconPool
     {
-        public const string FolderIconKey = "explorer";
+        public const string FolderIconKey = "folder";
+        public const string FileIconKey = "file";
         private static readonly ImageList ImageList = new ImageList();
 
         static IconPool()
         {
-            Add(FolderIconKey, Icon.ExtractAssociatedIcon(@"c:\windows\explorer.exe"));
-        }
-
-        public static bool Contains(string key)
-            => ImageList.Images.ContainsKey(key);
-
-        public static void Add(string key, Icon icon)
-        {
-            if (!Contains(key))
-            {
-                ImageList.Images.Add(key, icon);
-            }
+            var projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            ImageList.Images.Add(FolderIconKey, Image.FromFile($@"{projectDirectory}\Resources\folder.png"));
+            ImageList.Images.Add(FileIconKey, Image.FromFile($@"{projectDirectory}\Resources\file.png"));
         }
 
         public static ImageList GetImageList()
             => ImageList;
-
-        public static int GetIndex(string key)
-            => ImageList.Images.IndexOfKey(key);
-
-        public static Image Get(string key)
-            => ImageList.Images[key];
     }
 }
