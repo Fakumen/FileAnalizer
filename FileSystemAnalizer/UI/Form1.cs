@@ -33,26 +33,18 @@ namespace FileSystemAnalizer.UI
                 var result = dialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    var scanner = new FolderScanner() as Scanner<string, FolderScannedData>;
-                    FileHierarchyTree.Nodes.Clear();
+                    var scanner = new FolderScanner() as Scanner<string, FolderScanData>;
                     FileHierarchyTree.ImageList = IconPool.GetImageList();
-                    FileHierarchyTree.Nodes.Add(ScannedDataTreeNode.Create(scanner.TryScan(dialog.SelectedPath)));
+                    var hierarchy = new FileSystemScanDataTree(FileHierarchyTree);
+                    hierarchy.Clear();
+                    hierarchy.AddNode(new FolderDataNode(scanner.TryScan(dialog.SelectedPath)));
                 }
             }
         }
 
         private void FileHierarchyTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node is ScannedDataTreeNode<FolderScannedData>)
-            {
-                var node = e.Node as ScannedDataTreeNode<FolderScannedData>;
 
-            }
-            if (e.Node is ScannedDataTreeNode<FileScannedData>)
-            {
-                var node = e.Node as ScannedDataTreeNode<FileScannedData>;
-
-            }
         }
     }
 }

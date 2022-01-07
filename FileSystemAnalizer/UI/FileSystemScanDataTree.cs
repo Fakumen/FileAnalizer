@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace FileSystemAnalizer.UI
 {
-    public class FileSystemScanDataTree : IScanDataTree<ScannedDataTreeNode<FolderScannedData>>
+    public class FileSystemScanDataTree
     {
         private readonly TreeView treeView;
 
@@ -18,14 +18,9 @@ namespace FileSystemAnalizer.UI
             this.treeView = treeView;
         }
 
-        public void AddNode(ScannedDataTreeNode<FolderScannedData> node)
-        {
-            treeView.Nodes.Add(node);
-        }
+        public void AddNode<TDataNode>(TDataNode node) where TDataNode : TreeNode
+            => treeView.Nodes.Add(node);
 
-        public void Clear()
-        {
-            treeView.Nodes.Clear();
-        }
+        public void Clear() => treeView.Nodes.Clear();
     }
 }

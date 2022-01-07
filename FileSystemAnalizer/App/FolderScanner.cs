@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace FileSystemAnalizer.App
 {
-    public class FolderScanner : Scanner<string, FolderScannedData>
+    public class FolderScanner : Scanner<string, FolderScanData>
     {
         public FolderScanner() : base(path => Directory.Exists(path)) { }
 
-        protected override FolderScannedData Scan(string path)
+        protected override FolderScanData Scan(string path)
         {
-            var result = new FolderScannedData(path);
+            var result = new FolderScanData(path);
             result.InspectAll();
             return result;
         }
