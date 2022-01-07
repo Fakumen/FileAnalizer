@@ -7,3 +7,12 @@ D:\University\C#\Project\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.csproj.
 D:\University\C#\Project\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.exe
 D:\University\C#\Project\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.pdb
 D:\University\C#\Project\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.UI.FileAnalizerForm.resources
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\bin\Debug\FileSystemAnalizer.exe.config
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\bin\Debug\FileSystemAnalizer.exe
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\bin\Debug\FileSystemAnalizer.pdb
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.csprojAssemblyReference.cache
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.Properties.Resources.resources
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.UI.FileAnalizerForm.resources
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.csproj.GenerateResource.cache
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.exe
+D:\University\C#\Project\versions\v1\FileSystemAnalizer\obj\Debug\FileSystemAnalizer.pdb
