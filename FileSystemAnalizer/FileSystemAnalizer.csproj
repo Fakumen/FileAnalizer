@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,16 +49,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Old\Classes.cs" />
-    <Compile Include="Domain\FileScannedData.cs" />
-    <Compile Include="Domain\FolderScannedData.cs" />
-    <Compile Include="Domain\IScannedData.cs" />
-    <Compile Include="Domain\WeightData.cs" />
-    <Compile Include="Infrastructure\DisplayedNameAttribute.cs" />
+    <Compile Include="App\FolderScanner.cs" />
+    <Compile Include="App\Interfaces\IDataNode.cs" />
+    <Compile Include="App\Interfaces\IFileDataNode.cs" />
+    <Compile Include="App\Interfaces\IFolderDataNode.cs" />
+    <Compile Include="App\Scanner.cs" />
+    <Compile Include="App\UIElement.cs" />
+    <Compile Include="Domain\DomainEnumerableExtensions.cs" />
+    <Compile Include="Domain\Interfaces\IFileScanData.cs" />
+    <Compile Include="Domain\Interfaces\IFolderScanData.cs" />
+    <Compile Include="Infrastructure\ILazyDataLoader.cs" />
+    <Compile Include="Infrastructure\ITree.cs" />
+    <Compile Include="Domain\FileScanData.cs" />
+    <Compile Include="Domain\FolderScanData.cs" />
+    <Compile Include="Domain\Interfaces\IScanData.cs" />
+    <Compile Include="Domain\SizeData.cs" />
     <Compile Include="Infrastructure\UserAccess.cs" />
-    <Compile Include="Old\ToRemove.cs" />
+    <Compile Include="UI\FileSystemScanDataTree.cs" />
     <Compile Include="UI\IconPool.cs" />
-    <Compile Include="UI\ScannedDataTreeNode.cs" />
+    <Compile Include="UI\FolderDataNode.cs" />
     <Compile Include="UI\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +100,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\file.png" />
+    <Content Include="Resources\folder.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
