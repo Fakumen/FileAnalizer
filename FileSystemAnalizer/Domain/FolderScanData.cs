@@ -55,12 +55,24 @@ namespace FileSystemAnalizer.Domain
         {
             if (isInspected)
                 return;
-            foreach (var directory in directoryInfo.EnumerateDirectories().Filter(!UserAccess.IsCurrentUserAdmin))
+
+            IEnumerable<DirectoryInfo> directories;
+            try
+            {
+                directories = directoryInfo.EnumerateDirectories().Filter(!UserAccess.IsCurrentUserAdmin);
+            }
+            catch
+            {
+                return;
+            }
+
+            foreach (var directory in directories)
             {
                 var folderData = new FolderScanData(directory);
                 folderData.DataReady += OnSubfolderDataReady;
                 folders.Add(folderData);
             }
+
             foreach (var file in directoryInfo.EnumerateFiles().Filter(!UserAccess.IsCurrentUserAdmin))
             {
                 files.Add(new FileScanData(file));
